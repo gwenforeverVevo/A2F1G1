@@ -28,7 +28,7 @@ def ticketMenu():
     # file and store the data into a dictionary. Return the dictionary
     ticketZone = str(input("Enter ticket zone: "))
     zoneCapacity = str(input("Enter zone capacity: "))
-    ticketPrice = str(input("Enter price: "))
+    ticketPrice = str(input("Enter price: aa"))
     print(ticketZone , "Zone added")
     
     return ticketZone,zoneCapacity,ticketPrice
