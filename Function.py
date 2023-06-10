@@ -20,6 +20,9 @@ def mainMenu():
         case "4":
             print('\nThank you for using the system.\n')
             sys.exit()
+        case "5":
+            print('\nThank you for using the system.\n')
+            sys.exit()
         case _:
             print("\nError, Input the correct Value!")
             
