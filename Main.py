@@ -1,7 +1,4 @@
-# 
+# Runing main function
+from Function import *
 
-def mainMenu():
-    print("lol")
-    
-def mainMenu():
-    print("lol")
+mainMenu()
