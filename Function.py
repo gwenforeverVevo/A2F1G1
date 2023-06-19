@@ -1,14 +1,16 @@
 import sys
 
 def mainMenu():
-    # generatesthe main menu information and stores the data in a dictionary, 
+    # generates the main menu information and stores the data in a dictionary, 
     # return the menu dictionary
+    menuDictionary = {"1": "Add ticket", "2": "Buy ticket", "3": "Show Records", "4": "Quit"}
+    
     print("*****BTS Concert*****\n")
     print("Function menu:")
-    print("1. Add ticket")
-    print("2. Buy ticket")
-    print("3. Show Records")
-    print("4. Quit")
+    
+    for key, value in menuDictionary.items():
+        print(f"{key}. {value}")
+
     inputMenu =str(input("\nEnter selection (1-4): "))
     match inputMenu:
         case "1":
@@ -25,6 +27,8 @@ def mainMenu():
             sys.exit()
         case _:
             print("\nError, Input the correct Value!")
+
+    return menuDictionary, inputMenu 
             
 def ticketMenu():
     # – generate available ticket type for selection by reading the data from ticket.txt 
