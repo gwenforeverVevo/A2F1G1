@@ -14,7 +14,7 @@ def mainMenu():
     inputMenu =str(input("\nEnter selection (1-4): "))
     match inputMenu:
         case "1":
-            ticketMenu()
+            addNewTicket()
         case "2":
             buyTicket()
         case "3":
@@ -33,17 +33,24 @@ def mainMenu():
 def ticketMenu():
     # – generate available ticket type for selection by reading the data from ticket.txt 
     # file and store the data into a dictionary. Return the dictionary
-    ticketZone = str(input("Enter ticket zone: "))
-    zoneCapacity = str(input("Enter zone capacity: "))
-    ticketPrice = str(input("Enter price: "))
-    print(ticketZone , "Zone added")
-    
-    return ticketZone,zoneCapacity,ticketPrice
+    print('lol')
     
     
 def addNewTicket():
     # reads data needed from user and appends the record into the ticket.txt file
-    print("lol")
+    ticketDictionary = {}
+    ticketZone = str(input("Enter ticket zone: "))
+    zoneCapacity = str(input("Enter zone capacity: "))
+    ticketPrice = str(input("Enter price: "))
+
+    ticketDictionary[ticketZone] = {"Capacity": zoneCapacity, "Price": ticketPrice}
+    #ticketDictionary=object [ticketZone]=key
+    
+    with open("ticket.txt", "a") as file: #"a"=append
+        file.write(f"{ticketZone}, {zoneCapacity}, {ticketPrice}")
+    print(ticketZone , "Zone added")
+
+    return ticketDictionary
     
 def buyTicket():
     # o create bill object
