@@ -1,18 +1,20 @@
 import sys
 
 def mainMenu():
-    # generatesthe main menu information and stores the data in a dictionary, 
+    # generates the main menu information and stores the data in a dictionary, 
     # return the menu dictionary
+    menuDictionary = {"1": "Add ticket", "2": "Buy ticket", "3": "Show Records", "4": "Quit"}
+    
     print("*****BTS Concert*****\n")
     print("Function menu:")
-    print("1. Add ticket")
-    print("2. Buy ticket")
-    print("3. Show Records")
-    print("4. Quit")
+    
+    for key, value in menuDictionary.items():
+        print(f"{key}. {value}")
+
     inputMenu =str(input("\nEnter selection (1-4): "))
     match inputMenu:
         case "1":
-            ticketMenu()
+            addNewTicket()
         case "2":
             buyTicket()
         case "3":
@@ -25,21 +27,30 @@ def mainMenu():
             sys.exit()
         case _:
             print("\nError, Input the correct Value!")
+
+    return menuDictionary, inputMenu 
             
 def ticketMenu():
     # – generate available ticket type for selection by reading the data from ticket.txt 
     # file and store the data into a dictionary. Return the dictionary
-    ticketZone = str(input("Enter ticket zone: "))
-    zoneCapacity = str(input("Enter zone capacity: "))
-    ticketPrice = str(input("Enter price: "))
-    print(ticketZone , "Zone added")
-    
-    return ticketZone,zoneCapacity,ticketPrice
+    print('lol')
     
     
 def addNewTicket():
     # reads data needed from user and appends the record into the ticket.txt file
-    print("lol")
+    ticketDictionary = {}
+    ticketZone = str(input("Enter ticket zone: "))
+    zoneCapacity = str(input("Enter zone capacity: "))
+    ticketPrice = str(input("Enter price: "))
+
+    ticketDictionary[ticketZone] = {"Capacity": zoneCapacity, "Price": ticketPrice}
+    #ticketDictionary=object [ticketZone]=key
+    
+    with open("ticket.txt", "a") as file: #"a"=append
+        file.write(f"{ticketZone}, {zoneCapacity}, {ticketPrice}")
+    print(ticketZone , "Zone added")
+
+    return ticketDictionary
     
 def buyTicket():
     # o create bill object
