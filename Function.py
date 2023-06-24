@@ -33,7 +33,22 @@ def mainMenu():
 def ticketMenu():
     # – generate available ticket type for selection by reading the data from ticket.txt 
     # file and store the data into a dictionary. Return the dictionary
-    print('lol')
+    ticketMenuDictionary={}
+
+    with open('Ticket.txt', 'r') as f:
+        for line in f:
+            ticketDetails=line.strip().split(',')
+            ticketZone=ticketDetails[0]
+            ticketPrice=ticketDetails[2]
+
+            ticketMenuDictionary[ticketZone]= ticketPrice
+    
+    print('\nTicket Available:')
+    for i, (zone, price) in enumerate(ticketMenuDictionary.items(), start=1):
+        print(f"{i}. {zone} ${price.strip()}")
+
+    return ticketMenuDictionary
+
     
     
 def addNewTicket():
@@ -46,13 +61,14 @@ def addNewTicket():
     ticketDictionary[ticketZone] = {"Capacity": zoneCapacity, "Price": ticketPrice}
     #ticketDictionary=object [ticketZone]=key
     
-    with open("ticket.txt", "a") as file: #"a"=append
-        file.write(f"{ticketZone}, {zoneCapacity}, {ticketPrice}")
+    with open("Ticket.txt", "a") as file: #"a"=append
+        file.write(f"{ticketZone}, {zoneCapacity}, {ticketPrice}\n")
     print(ticketZone , "Zone added")
 
     return ticketDictionary
     
 def buyTicket():
+    ticketMenuDictionary=ticketMenu()
     # o create bill object
     # o loop to allow user to buy multiple tickets by reading the ticket type and 
     # number of tickets each round. For each ticket type added, update the bill 
@@ -61,7 +77,6 @@ def buyTicket():
     # function
     # o print bill invoice at the end. Use printInvoice function created in class Bill
     # o store the bill data into bill.txt fil
-    print("lol")
 
 def showRecords():
     # showRecords – reads data from bill.txt file and show the data of each bill.
