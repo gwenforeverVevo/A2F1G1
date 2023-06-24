@@ -1,5 +1,5 @@
 import sys
-
+#
 def mainMenu():
     # generates the main menu information and stores the data in a dictionary, 
     # return the menu dictionary
@@ -65,7 +65,7 @@ def addNewTicket():
         file.write(f"{ticketZone}, {zoneCapacity}, {ticketPrice}\n")
     print(ticketZone , "Zone added")
 
-    return ticketDictionary
+    return ticketDictionary 
     
 def buyTicket():
     ticketMenuDictionary=ticketMenu()
