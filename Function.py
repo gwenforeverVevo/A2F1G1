@@ -45,6 +45,8 @@ def ticketMenu():
     
     print('\nTicket Available:')
     for i, (zone, price) in enumerate(ticketMenuDictionary.items(), start=1):
+        #enumerate: allows to keep track of the number of iterations in a loop
+        #start: starts at 1
         print(f"{i}. {zone} ${price.strip()}")
 
     return ticketMenuDictionary
