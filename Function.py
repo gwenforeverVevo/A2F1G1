@@ -1,83 +1,144 @@
 import sys
+import os
+from Ticket import *
+from Bill import *
+
 
 def mainMenu():
-    # generates the main menu information and stores the data in a dictionary, 
+    # generates the main menu information and stores the data in a dictionary,
     # return the menu dictionary
-    menuDictionary = {"1": "Add ticket", "2": "Buy ticket", "3": "Show Records", "4": "Quit"}
-    
+    menuDictionary = {"1": "Add ticket", "2": "Buy ticket",
+                      "3": "Show Records", "4": "Quit"}
+    os.system('cls')
     print("*****BTS Concert*****\n")
-    print("Function menu:")
-    
-    for key, value in menuDictionary.items():
-        print(f"{key}. {value}")
+    while (True):
+        
+        print("\nFunction menu:")
 
-    inputMenu =str(input("\nEnter selection (1-4): "))
-    match inputMenu:
-        case "1":
-            addNewTicket()
-        case "2":
-            buyTicket()
-        case "3":
-            showRecords()
-        case "4":
-            print('\nThank you for using the system.\n')
-            sys.exit()
-        case "5":
-            print('\nThank you for using the system.\n')
-            sys.exit()
-        case _:
-            print("\nError, Input the correct Value!")
+        for key, value in menuDictionary.items():
+            print(f"{key}. {value}")
 
-    return menuDictionary, inputMenu 
-            
+        inputMenu = str(input("\nEnter selection (1-4): "))
+        match inputMenu:
+            case "1":
+                addNewTicket()
+                # Clearing the Screen
+
+            case "2":
+                buyTicket()
+                # Clearing the Screen
+
+            case "3":
+                showRecords()
+                # Clearing the Screen
+
+            case "4":
+                print('\nThank you for using the system.\n')
+                sys.exit()
+            case "6":
+                # Error handerling
+                ticketMenuCheck()
+            case _:
+                print("\nError, Input the correct Value!")
+
+
 def ticketMenu():
-    # – generate available ticket type for selection by reading the data from ticket.txt 
+    # – generate available ticket type for selection by reading the data from ticket.txt
     # file and store the data into a dictionary. Return the dictionary
-    ticketMenuDictionary={}
-
+    ticketMenuDictionary = {}
     with open('Ticket.txt', 'r') as f:
         for line in f:
-            ticketDetails=line.strip().split(',')
-            ticketZone=ticketDetails[0]
-            ticketPrice=ticketDetails[2]
-
-            ticketMenuDictionary[ticketZone]= ticketPrice
-    
-    print('\nTicket Available:')
-    for i, (zone, price) in enumerate(ticketMenuDictionary.items(), start=1):
-        print(f"{i}. {zone} ${price.strip()}")
-
+            ticketDetails = line.strip().split(',')
+            ticketZone = ticketDetails[0]
+            zoneCapacity = ticketDetails[1]
+            ticketPrice = ticketDetails[2]
+            ticketMenuDictionary[line] = Ticket(
+                ticketZone, zoneCapacity, ticketPrice)
     return ticketMenuDictionary
 
-    
-    
+
 def addNewTicket():
+    os.system('cls')
     # reads data needed from user and appends the record into the ticket.txt file
     ticketDictionary = {}
     ticketZone = str(input("Enter ticket zone: "))
-    zoneCapacity = str(input("Enter zone capacity: "))
-    ticketPrice = str(input("Enter price: "))
+    zoneCapacity = int(input("Enter zone capacity: "))
+    ticketPrice = float(input("Enter price: "))
+    ticketDictionary[ticketZone] = {
+        "Capacity": zoneCapacity, "Price": ticketPrice}
+    # ticketDictionary=object [ticketZone]=key
+    with open("Ticket.txt", "a") as file:  # "a"=append
+        file.write(f"{ticketZone},{zoneCapacity},{ticketPrice}\n")
+    print(ticketZone, "Zone added")
+    os.system('cls')
+    return ticketDictionary
 
-    ticketDictionary[ticketZone] = {"Capacity": zoneCapacity, "Price": ticketPrice}
-    #ticketDictionary=object [ticketZone]=key
-    
-    with open("Ticket.txt", "a") as file: #"a"=append
-        file.write(f"{ticketZone}, {zoneCapacity}, {ticketPrice}\n")
-    print(ticketZone , "Zone added")
 
-    return ticketDictionary 
-    
 def buyTicket():
-    ticketMenuDictionary=ticketMenu()
-    # o create bill object
-    # o loop to allow user to buy multiple tickets by reading the ticket type and 
-    # number of tickets each round. For each ticket type added, update the bill 
-    # object.
-    # o ticket menu is displayed by using the dictionary returned from ticketMenu
-    # function
-    # o print bill invoice at the end. Use printInvoice function created in class Bill
-    # o store the bill data into bill.txt fil
+    os.system('cls')
+    ticketDictionary = ticketMenu()
+    bill = Bill()
+    while True:
+        print('\nTicket Available:')
+        for i, (ticketZone, ticketClass) in enumerate(ticketDictionary.items(), start=1):
+            print(f"{i}. {ticketClass}")
+
+        selection = input("Enter selection (or 'q' to quit): ")
+        if selection == "q":
+            break
+
+        if selection is None:
+            print("Invalid ticket type. Please try again.")
+            break
+        else:
+            selection = int(selection)
+
+        if selection not in range(1, len(ticketDictionary) + 1):
+            print("Invalid ticket type. Please try again.")
+            continue
+
+        ticket = list(ticketDictionary.values())[selection - 1]
+        quantity = int(input("Enter the number of tickets: "))
+
+        if quantity > ticket.capacity:
+            print("Not enough tickets available. Please try again.")
+            continue
+        bill.addItem(ticket, quantity)
+
+        continueSelection = input("Continue another purchase? (y/n): ")
+        if continueSelection == "y":
+            continue
+        elif continueSelection == "n":
+            break
+        else:
+            print("Invalid input. Please try again.\n\n")
+
+    bill.printInvoice()
+
+
 
 def showRecords():
-    # showRecords – reads data from bill.txt file and show the data of each bill.
-    print("Ticket avaible")
+    print("Billing Records:")
+    with open("bill.txt", "r") as file:
+        for line in file:
+            billId, billDate, ticketZone,totalCharge = line.strip().split(",")
+            print(f"Bill ID: {billId}")
+            print(f"Bill Date: {billDate}")
+            print(f"Ticket Zone: {ticketZone}")
+            print(f"Total Charge: ${totalCharge}")
+            print()
+
+
+def ticketMenuCheck():
+    ticketDictionary = {}
+    with open("ticket.txt", "r") as file:
+        for line in file:
+            ticketDetails = line.strip().split(",")
+            if len(ticketDetails) == 3:
+                ticketZone = ticketDetails[0]
+                zoneCapacity = int(ticketDetails[1])
+                ticketPrice = float(ticketDetails[2])
+                ticketDictionary[ticketZone] = Ticket(
+                    ticketZone, zoneCapacity, ticketPrice)
+    for ticketZone, ticket in ticketDictionary.items():
+        print(ticket)
