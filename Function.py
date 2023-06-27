@@ -2,6 +2,7 @@ import sys
 import os
 from Ticket import *
 from Bill import *
+import datetime
 
 
 def mainMenu():
@@ -18,7 +19,7 @@ def mainMenu():
         for key, value in menuDictionary.items():
             print(f"{key}. {value}")
 
-        inputMenu = str(input("\nEnter selection (1-4): "))
+        inputMenu =  (input("\nEnter selection (1-4): "))
         match inputMenu:
             case "1":
                 addNewTicket()
@@ -118,16 +119,22 @@ def buyTicket():
 
 
 def showRecords():
-    print("Billing Records:")
     with open("bill.txt", "r") as file:
+        print("Billing Records:")
+        print("\n")
+        print("\n")
+        print("Number of bills:")
         for line in file:
-            billId, billDate, ticketZone,totalCharge = line.strip().split(",")
-            print(f"Bill ID: {billId}")
-            print(f"Bill Date: {billDate}")
-            print(f"Ticket Zone: {ticketZone}")
-            print(f"Total Charge: ${totalCharge}")
-            print()
-
+            print("---------------------------------------------------------------------")
+            print("{:<10s}{:^25s}{:>10}".format("Bill No.","Billing Date","Total"))
+            print("----------------------------------------------------------------------")
+            billId, billDate, totalCharge = line.strip().split(",")
+            billIdFormat = "B" + billId
+            totalChargeFormat = "$" + totalCharge
+            print("{:<10s}{:^25s}{:>10s}".format(billIdFormat,billDate,totalChargeFormat))
+            print("======================================================================")
+            print("\n")
+            print("\n")
 
 def ticketMenuCheck():
     ticketDictionary = {}

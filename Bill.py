@@ -5,7 +5,7 @@ class Bill:
     count = 1
     def __init__(self):
         self.billId = Bill.count
-        self.billDate = datetime.datetime.now()
+        self.billDate = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
         self.totalPrice = 0
         self.ticketItems = []
         Bill.count += 1
@@ -38,11 +38,13 @@ class Bill:
         print("{:<15s}{:>20.2f}".format("Total",self.totalPrice))
         print("==============================================")
         with open("bill.txt", "a") as file:
-            for ticketItem in self.ticketItems:
-                ticket, quantity, subtotal = ticketItem
-                ticketType = ticket.zone
-                line = f"{self.billId},{self.billDate},{ticketType},{subtotal}\n"
-                file.write(line)
+            line = f"{self.billId},{self.billDate},{self.totalPrice}\n"
+            file.write(line)
+            # for ticketItem in self.ticketItems:
+            #     ticket, quantity, subtotal = ticketItem
+            #     ticketType = ticket.zone
+            #     line = f"{self.billId},{self.billDate},{ticketType},{subtotal}\n"
+            #     file.write(line)
             
     def getBillId(self):
         with open("bill.txt", "r") as file:
