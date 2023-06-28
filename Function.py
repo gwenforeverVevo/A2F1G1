@@ -8,6 +8,7 @@ import datetime
 def mainMenu():
     # generates the main menu information and stores the data in a dictionary,
     # return the menu dictionary
+    open('bill.txt', 'w').close() #clear the contents of the bill.txt file whenever a new user uses this system.
     menuDictionary = {"1": "Add ticket", "2": "Buy ticket",
                       "3": "Show Records", "4": "Quit"}
     os.system('cls')
@@ -120,21 +121,25 @@ def buyTicket():
 
 def showRecords():
     with open("bill.txt", "r") as file:
-        print("Billing Records:")
-        print("\n")
-        print("\n")
-        print("Number of bills:")
-        for line in file:
-            print("---------------------------------------------------------------------")
-            print("{:<10s}{:^25s}{:>10}".format("Bill No.","Billing Date","Total"))
-            print("----------------------------------------------------------------------")
-            billId, billDate, totalCharge = line.strip().split(",")
-            billIdFormat = "B" + billId
-            totalChargeFormat = "$" + totalCharge
-            print("{:<10s}{:^25s}{:>10s}".format(billIdFormat,billDate,totalChargeFormat))
-            print("======================================================================")
+        file=file.readlines()
+        if len(file) == 0:
+            print('No billing records were found.')
+        else:
+            print("Billing Records:")
             print("\n")
             print("\n")
+            print("Number of bills:")
+            for line in file:
+                print("---------------------------------------------------------------------")
+                print("{:<10s}{:^25s}{:>10}".format("Bill No.","Billing Date","Total"))
+                print("----------------------------------------------------------------------")
+                billId, billDate, totalCharge = line.strip().split(",")
+                billIdFormat = "B" + billId
+                totalChargeFormat = "$" + totalCharge
+                print("{:<10s}{:^25s}{:>10s}".format(billIdFormat,billDate,totalChargeFormat))
+                print("======================================================================")
+                print("\n")
+                print("\n")
 
 def ticketMenuCheck():
     ticketDictionary = {}
