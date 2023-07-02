@@ -8,6 +8,7 @@ import datetime
 def mainMenu():
     # generates the main menu information and stores the data in a dictionary,
     # return the menu dictionary
+    open('bill.txt', 'w').close() #clear the contents of the bill.txt file whenever a new user uses this system.
     menuDictionary = {"1": "Add ticket", "2": "Buy ticket",
                       "3": "Show Records", "4": "Quit"}
     os.system('cls')
@@ -38,7 +39,7 @@ def mainMenu():
                 sys.exit()
             case "6":
                 # Error handerling
-                ticketMenuCheck()
+                ticketMenuTestCheck()
             case _:
                 print("\nError, Input the correct Value!")
 
@@ -79,6 +80,7 @@ def buyTicket():
     os.system('cls')
     ticketDictionary = ticketMenu()
     bill = Bill()
+    
     while True:
         print('\nTicket Available:')
         for i, (ticketZone, ticketClass) in enumerate(ticketDictionary.items(), start=1):
@@ -104,7 +106,20 @@ def buyTicket():
         if quantity > ticket.capacity:
             print("Not enough tickets available. Please try again.")
             continue
+            
         bill.addItem(ticket, quantity)
+
+        # Decrease quantity in ticket.txt file
+        with open("ticket.txt", "r") as file:
+            lines = file.readlines()
+
+        with open("ticket.txt", "w") as file:
+            for line in lines:
+                data = line.strip().split(",")
+                if data[0] == ticket.zone:
+                    updated_quantity = max(0, int(data[1]) - quantity)
+                    data[1] = str(updated_quantity)
+                file.write(",".join(data) + "\n")
 
         continueSelection = input("Continue another purchase? (y/n): ")
         if continueSelection == "y":
@@ -113,30 +128,34 @@ def buyTicket():
             break
         else:
             print("Invalid input. Please try again.\n\n")
-
+    print("\n\n")
     bill.printInvoice()
 
 
 
 def showRecords():
     with open("bill.txt", "r") as file:
-        print("Billing Records:")
-        print("\n")
-        print("\n")
-        print("Number of bills:")
-        for line in file:
-            print("---------------------------------------------------------------------")
-            print("{:<10s}{:^25s}{:>10}".format("Bill No.","Billing Date","Total"))
-            print("----------------------------------------------------------------------")
-            billId, billDate, totalCharge = line.strip().split(",")
-            billIdFormat = "B" + billId
-            totalChargeFormat = "$" + totalCharge
-            print("{:<10s}{:^25s}{:>10s}".format(billIdFormat,billDate,totalChargeFormat))
-            print("======================================================================")
+        file=file.readlines()
+        if len(file) == 0:
+            print('No billing records were found.')
+        else:
+            print("Billing Records:")
             print("\n")
             print("\n")
+            print("Number of bills:")
+            for line in file:
+                print("---------------------------------------------------------------------")
+                print("{:<10s}{:^25s}{:>10}".format("Bill No.","Billing Date","Total"))
+                print("----------------------------------------------------------------------")
+                billId, billDate, totalCharge = line.strip().split(",")
+                billIdFormat = "B" + billId
+                totalChargeFormat = "$" + totalCharge
+                print("{:<10s}{:^25s}{:>10s}".format(billIdFormat,billDate,totalChargeFormat))
+                print("======================================================================")
+                print("\n")
+                print("\n")
 
-def ticketMenuCheck():
+def ticketMenuTestCheck():
     ticketDictionary = {}
     with open("ticket.txt", "r") as file:
         for line in file:
@@ -147,5 +166,10 @@ def ticketMenuCheck():
                 ticketPrice = float(ticketDetails[2])
                 ticketDictionary[ticketZone] = Ticket(
                     ticketZone, zoneCapacity, ticketPrice)
+    
     for ticketZone, ticket in ticketDictionary.items():
         print(ticket)
+        print(f"Ticket Zone: {ticketZone}")
+        print(f"Capacity: {ticket.capacity}")
+        print(f"Price: ${ticket.price:.2f}")
+        print()

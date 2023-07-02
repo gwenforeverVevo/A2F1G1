@@ -19,6 +19,8 @@ class Bill:
         else:
             print("Insufficient capacity for the selected ticket type.")
 
+
+
     def billTotal(self):
         return self.totalPrice
 
