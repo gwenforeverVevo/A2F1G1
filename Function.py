@@ -38,7 +38,7 @@ def mainMenu():
                 print('\nThank you for using the system.\n')
                 sys.exit()
             case "6":
-                # Error handerling
+                # Error handling
                 ticketMenuTestCheck()
             case _:
                 print("\nError, Input the correct Value!")
@@ -60,7 +60,7 @@ def ticketMenu():
 
 
 def addNewTicket():
-    os.system('cls')
+    #os.system('cls')
     # reads data needed from user and appends the record into the ticket.txt file
     ticketDictionary = {}
     ticketZone = str(input("Enter ticket zone: "))
@@ -72,12 +72,12 @@ def addNewTicket():
     with open("Ticket.txt", "a") as file:  # "a"=append
         file.write(f"{ticketZone},{zoneCapacity},{ticketPrice}\n")
     print(ticketZone, "Zone added")
-    os.system('cls')
+    #os.system('cls')
     return ticketDictionary
 
 
 def buyTicket():
-    os.system('cls')
+    #os.system('cls')
     ticketDictionary = ticketMenu()
     bill = Bill()
     
