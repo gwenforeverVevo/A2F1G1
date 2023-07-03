@@ -60,7 +60,7 @@ def ticketMenu():
 
 
 def addNewTicket():
-    #os.system('cls')
+    os.system('cls')
     # reads data needed from user and appends the record into the ticket.txt file
     ticketDictionary = {}
     ticketZone = str(input("Enter ticket zone: "))
@@ -77,7 +77,7 @@ def addNewTicket():
 
 
 def buyTicket():
-    #os.system('cls')
+    os.system('cls')
     ticketDictionary = ticketMenu()
     bill = Bill()
     
