@@ -90,11 +90,11 @@ def buyTicket():
         if selection == "q":
             break
 
-        if selection is None:
-            print("Invalid ticket type. Please try again.")
-            break
-        else:
-            selection = int(selection)
+        try:
+            selection=int(selection)
+        except ValueError:
+            print('Invalid ticket type. Please try again.')
+            continue    
 
         if selection not in range(1, len(ticketDictionary) + 1):
             print("Invalid ticket type. Please try again.")
