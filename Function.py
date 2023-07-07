@@ -62,16 +62,50 @@ def ticketMenu():
 
 def addNewTicket():
     ticketDictionary = {}
-    ticketZone = str(input("Enter ticket zone: "))
-    zoneCapacity = int(input("Enter zone capacity: "))
-    ticketPrice = float(input("Enter price: "))
-    ticketDictionary[ticketZone] = {
-        "Capacity": zoneCapacity, "Price": ticketPrice}
-    # ticketDictionary=object [ticketZone]=key
-    with open("Ticket.txt", "a") as file:  # "a"=append
-        file.write(f"{ticketZone},{zoneCapacity},{ticketPrice}\n")
-    print(ticketZone, "Zone added")
-    os.system('cls')
+    # os.system('cls')
+    while True:
+        ticketZone = input("Enter ticket zone (or 'q' to quit): ")
+        if ticketZone.lower() == "q":
+            print("Adding Ticket process has been canceled :)")
+            break
+        
+        if ticketZone in ticketDictionary:
+            print("Ticket zone already exists. Please enter a different zone.")
+            continue
+        
+        # Check if the ticket zone already exists in the file
+        with open("Ticket.txt", "r") as file:
+            for line in file:
+                existingZone = line.strip().split(",")[0]
+                if existingZone == ticketZone:
+                    print("Ticket zone already exists. Please enter a different zone.")
+                    break
+            else:
+                # Zone does not exist, proceed with adding the ticket
+                zoneCapacity = input("Enter zone capacity: ")
+                if not zoneCapacity.isdigit() or int(zoneCapacity) <= 0:
+                    print("Invalid input. Capacity must be a positive integer.")
+                    input("Press Enter to retry...")
+                    continue
+                zoneCapacity = int(zoneCapacity)
+
+                ticketPrice = input("Enter price: ")
+                if not ticketPrice.replace('.', '', 1).isdigit() or float(ticketPrice) <= 0:
+                    print("Invalid input. Price must be a positive numeric value.")
+                    input("Press Enter to retry...")
+                    continue
+                ticketPrice = format(float(ticketPrice), ".2f")
+
+                ticketDictionary[ticketZone] = {
+                    "Capacity": zoneCapacity, "Price": ticketPrice
+                }
+
+                with open("Ticket.txt", "a") as file:
+                    file.write(f"{ticketZone},{zoneCapacity},{ticketPrice}\n")
+
+                print(ticketZone, "Zone added")
+                break
+
     return ticketDictionary
 
 
@@ -82,72 +116,76 @@ def buyTicket():
     addedItem = False  # Item is empty
 
     while True:
-        print('\nTicket Available:')
-        for i, ticketClass in enumerate(ticketDictionary.values(), start=1):
-            print(f"{i}. {ticketClass}")
-
-        selection = input(f"Enter selection from 1 to {i} (or 'q' to quit): ")
-        if selection == "q":
-            break
-
-        if selection is None:
-            print("Invalid ticket type. Please try again.")
+        if not ticketDictionary:
+            print("Ticket.txt is empty.")
             break
         else:
-            selection = int(selection)
+            print('\nTicket Available:')
+            for i, ticketClass in enumerate(ticketDictionary.values(), start=1):
+                print(f"{i}. {ticketClass}")
 
-        if selection not in range(1, len(ticketDictionary) + 1):
-            print("Invalid ticket type. Please try again.")
-            continue
-
-        ticket = list(ticketDictionary.values())[selection - 1]
-        if ticket.capacity == 0:
-            print("Ticket has sold out. Please choose another type of ticket.")
-            continue
-
-        while True:
-            quantity = input("Enter the number of tickets: ")
-            if not quantity.isdigit() or int(quantity) <= 0:
-                print("Invalid input. Quantity must be a positive integer.")
-            else:
-                quantity = int(quantity)
-
-                if quantity > ticket.capacity:
-                    print("Not enough tickets available. Please try again.")
-                else:
-                    break
-
-        bill.addItem(ticket, quantity)
-        addedItem = True  # Set True thus an item is added
-
-        # decrease quantity in ticket.txt file :) im going mentally insane
-        with open("ticket.txt", "r") as file:
-            lines = file.readlines()
-
-        with open("ticket.txt", "w") as file:
-            for line in lines:
-                data = line.strip().split(",")
-                if data[0] == ticket.zone:
-                    updatedQuantity = max(0, int(data[1]) - quantity)
-                    data[1] = str(updatedQuantity)
-                file.write(",".join(data) + "\n")
-
-        while True:
-            continueSelection = input("Continue another purchase? (y/n): ")
-            if continueSelection.lower() == "y":
+            selection = input(
+                f"Enter selection from 1 to {i} (or 'q' to quit): ")
+            if selection == "q":
+                print("Buying process has been canceled")
                 break
-            elif continueSelection.lower() == "n":
-                print("\n\n")
-                bill.printInvoice()
-                print("Buying process has been completed. Exiting...")
-                return
             else:
-                print("Invalid input. Please enter 'y' or 'n'.")
+                if not selection.isdigit():
+                    print("Invalid input. Please enter a number.")
+                    continue
 
-    if addedItem:  # Check if any item is added to the bill
-        print("\n\n")
-    else:
-        print("No items added to the bill.")
+                selection = int(selection)
+                if selection not in range(1, i + 1):
+                    print(
+                        f"Invalid ticket type. Please input selection from 1 to {i}.")
+                    continue
+
+                ticket = list(ticketDictionary.values())[selection - 1]
+                if ticket.capacity == 0:
+                    print("Ticket has sold out. Please choose another type of ticket.")
+                    continue
+
+                while True:
+                    quantity = input("Enter the number of tickets: ")
+                    if not quantity.isdigit() or int(quantity) <= 0:
+                        print("Invalid input. Quantity must be a positive integer.")
+                    else:
+                        quantity = int(quantity)
+
+                        if quantity > ticket.capacity:
+                            print("Not enough tickets available. Please try again.")
+                        else:
+                            break
+
+                bill.addItem(ticket, quantity)
+                addedItem = True  # Set True thus an item is added
+
+                # decrease quantity in ticket.txt file :) im going mentally insane
+                with open("ticket.txt", "r") as file:
+                    lines = file.readlines()
+
+                with open("ticket.txt", "w") as file:
+                    for line in lines:
+                        data = line.strip().split(",")
+                        if data[0] == ticket.zone:
+                            updatedQuantity = max(0, int(data[1]) - quantity)
+                            data[1] = str(updatedQuantity)
+                        file.write(",".join(data) + "\n")
+
+                while True:
+                    continueSelection = input(
+                        "Continue another purchase? (y/n): ")
+                    if continueSelection.lower() == "y":
+                        break
+                    elif continueSelection.lower() == "n":
+                        if addedItem:  # Check if any item is added to the bill
+                            print("\n")
+                            bill.printInvoice()
+                        else:
+                            print("No items added to the bill.")
+                        return
+                    else:
+                        print("Invalid input. Please enter 'y' or 'n'.")
 
 
 def showRecords():
