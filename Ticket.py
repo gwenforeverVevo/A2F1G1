@@ -6,7 +6,7 @@ class Ticket:
 
     def __str__(self):
         if self.capacity == 0:
-            return f"{self.zone} (${self.price:.2f}) - SOLD OUT!!"
+            return "{:<15s} (${:<5.2f}) - SOLD OUT!!".format(self.zone, self.price)
         else:
-            return f"{self.zone} (${self.price:.2f})"
+            return "{:<15s} (${:<5.2f}) ".format(self.zone, self.price)
  

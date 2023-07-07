@@ -12,13 +12,19 @@ class Bill:
 
     def addItem(self, ticket, quantity):
         if ticket.capacity >= quantity:
-            subtotal = ticket.price * quantity
-            self.ticketItems.append([ticket, quantity, subtotal])
-            self.totalPrice += subtotal
+            for item in self.ticketItems:
+                if item[0] == ticket:
+                    item[1] += quantity
+                    item[2] = ticket.price * item[1]
+                    break
+            else:
+                subtotal = ticket.price * quantity
+                self.ticketItems.append([ticket, quantity, subtotal])
+            
+            self.totalPrice += ticket.price * quantity
             ticket.capacity -= quantity
         else:
             print("Insufficient capacity for the selected ticket type.")
-
 
 
     def billTotal(self):
@@ -49,9 +55,12 @@ class Bill:
             #     file.write(line)
             
     def getBillId(self):
+        lastBillId = None
         with open("bill.txt", "r") as file:
             for line in file:
-                billId, billDate,TicketZone,totalCharge = line.strip().split(",")
+                billId, billDate, ticketZone, totalCharge = line.strip().split(",")
+                lastBillId = billId
+        return int(lastBillId) if lastBillId is not None else 0
                
             
 
