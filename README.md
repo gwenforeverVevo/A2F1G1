@@ -1,2 +1,2 @@
 # A2F1G1
- Python assigment project
+INTI PROJECT Python assigment project
